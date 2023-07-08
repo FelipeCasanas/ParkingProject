@@ -8,10 +8,32 @@
 # Aca se encuentra los vectores y matrices que necesita el programa
 # Tambien el menu principal que ve el usuario
 def home():
-    tablaTarifasAutos = ["Autos", -1]
-    tablaTarifasMotos = ["Motos", -1]
-    contadorFactura = 0
-    registroVehiculos = [["Factura", "Placa", "Tipo Vehiculo", "Hora Ingreso", "Hora Salida", "Total Minutos", "Nombre", "Cobro"]]
+    tablaTarifasAutos = ["Automovil", -1]
+    tablaTarifasMotos = ["Motocicleta", -1]
+    contadorFactura = 1
+    #registroVehiculos = [[1, "Placa", "Tipo Vehiculo", "Hora Ingreso", "Hora Salida", "Total Minutos", "Nombre", "Cobro"], 
+
+    registroVehiculos = [[1, "ABC123", "Automóvil", "09:30", "12:45", 195, "Juan Pérez", 150],
+          [2, "DEF45F", "Motocicleta", "11:15", "14:20", 185, "María García", 120],
+          [3, "GHI789", "Automovil", "13:20", "18:10", 290, "Pedro López", 230],
+          [4, "JKL012", "Automovil", "15:45", "19:30", 225, "Ana Martínez", 180],
+          [5, "MNO345", "Automovil", "08:00", "11:30", 210, "Luis Rodríguez", 170],
+          [6, "PQR67A", "Motocicleta", "10:30", "12:15", 105, "Sofía Hernández", 90],
+          [7, "STU901", "Automovil", "14:30", "17:45", 195, "Carlos Torres", 150],
+          [8, "VWX234", "Automovil", "12:00", "16:20", 260, "Laura Sánchez", 210],
+          [9, "YZA567", "Automovil", "09:15", "13:45", 270, "Daniel Ramírez", 220],
+          [10, "BCD89G", "Motocicleta", "16:45", "18:30", 105, "Isabel Cruz", 90],
+          [11, "EFG123", "Automovil", "11:30", "14:50", 200, "Roberto Ortega", 160],
+          [12, "HIJ456", "Automovil", "13:00", "18:40", 340, "Carmen Ríos", 270],
+          [13, "KLM78C", "Motocicleta", "09:45", "12:10", 145, "Manuel Torres", 120],
+          [14, "NOP01D", "Motocicleta", "08:15", "11:00", 165, "Ana María Gómez", 130],
+          [15, "QRS345", "Automovil", "10:20", "15:30", 310, "David López", 250],
+          [16, "TUV678", "Automovil", "14:30", "18:15", 225, "Sara Martínez", 180],
+          [17, "WXY901", "Automovil", "08:45", "12:30", 225, "Javier Hernández", 180],
+          [18, "ZAB23B", "Motocicleta", "11:00", "12:45", 105, "María José Torres", 90],
+          [19, "CDE567", "Automovil", "15:00", "19:30", 270, "Alejandro Ramírez", 220],
+          [20, "FGH89X", "Motocicleta", "16:30", "18:15", 105, "Patricia Cruz", 90]]
+
 
     # Se crea variable y se inicia bucle que continua mientras valido = false
     # Se valida que numero ingresado este entre el rango. Si lo es, valido = true y pasa al metodo indicado por opcion.
@@ -19,7 +41,7 @@ def home():
     valido = False
 
     while valido == False:
-        print("Menú Principal")
+        print("\nMenú Principal")
         print("1. tarifas")
         print("2. Ingresar vehiculo")
         print("3. Buscar vehiculo")
@@ -28,7 +50,8 @@ def home():
         print("6. Buscar factura")
         print("7. Cuadre de caja")
         print("8. Salir")
-        opcion = int(input("Ingrese una opcion: "))
+
+        opcion = int(input("\nIngrese una opcion: "))
         if (opcion < 1 and opcion > 8):
             valido == False
             print("La opcion seleccionada no existe")
@@ -38,12 +61,12 @@ def home():
             if opcion == 1:
                 operarTarifa(tablaTarifasAutos, tablaTarifasMotos)
             elif opcion == 2:
-                ingresarVehiculo(registroVehiculos, contadorFactura)
-                contadorFactura += 1
+                nuevoIngreso = ingresarVehiculo(registroVehiculos, contadorFactura)
+                registroVehiculos.append(nuevoIngreso)
             elif opcion == 3:
-                buscarVehiculo()
+                buscarVehiculo(registroVehiculos)
             elif opcion == 4:
-                mostrarRegistros()
+                mostrarRegistros(registroVehiculos)
             elif opcion == 5:
                 salidaVehiculo()
             elif opcion == 6:
@@ -62,11 +85,12 @@ def modificarTarifas(tablaTarifasAutos, tablaTarifasMotos):
     # Si no ha sido definida dara un mensaje indicando eso y no dejara modificar la tarifa
     # Si ya fue definida dejara modificar la tarifa actual en la categoria de vehiculo seleccionada
     while repetir == True:
-        print("Modificar Tarifas")
+        print("\nModificar Tarifas")
         print("1. Modificar Tarifa Automóvil")
         print("2. Modificar Tarifa Motocicleta")
         print("3. Regresar al subMenú Tarifas")
         tarifaAModificar = int(input("Ingrese una opcion: "))
+
         if tarifaAModificar == 1:
             if tablaTarifasAutos[1] == -1:
                 print("La tarifa no ha sido definida previamente")
@@ -89,7 +113,6 @@ def modificarTarifas(tablaTarifasAutos, tablaTarifasMotos):
 
         elif tarifaAModificar == 3:
             operarTarifa(tablaTarifasAutos, tablaTarifasMotos)
-
         else:
             print("La opcion seleccionada no existe")
             repetir = True
@@ -97,24 +120,26 @@ def modificarTarifas(tablaTarifasAutos, tablaTarifasMotos):
 
 # Condicionales anidados para permitir el desplazamiento por la interfaz de tarifas del programa y en cada categoria tiene sus respectivas funciones
 def operarTarifa(tablaTarifasAutos, tablaTarifasMotos):
-    print("Tarifas")
+    print("\nTarifas")
     print("1. Ingresar tarifas")
     print("2. Mostrar tarifas")
     print("3. Modificar tarifas")
     print("4.  Regresar al Menú principal")
     accionARealizar = int(input("Ingrese una opcion: "))
     #Seccion de ingresar tarifas, aqui se ingresa el primer valor de tarifas al programa
+
     if accionARealizar == 1:
 
         # Se verifica si en la tabla ya fue definida la tarifa, si no ha sido definida entonces se ejecuta el if. 
         # Sino, se ejecuta el else y pide al usuario que establezca el valor de la tarifa
         # Tambien valida que la tarifa sea igual o mayor a 0
         # Esto aplica para opcion 1 y 2, opcion 3 solo nos devuelve al menu tarifas
-        print("Ingresar Tarifas")
+        print("\nSeleccione el vehiculo a asignar tarifas")
         print("1. Ingresar Tarifa de Automóvil")
         print("2. Ingresar Tarifa de Motocicleta")
         print("3. Regresar al subMenú Tarifas")
         tarifaAIngresar = int(input("Ingrese una opcion: "))
+
         if tarifaAIngresar == 1:
             
             if tablaTarifasAutos[1] != -1:
@@ -171,8 +196,17 @@ def operarTarifa(tablaTarifasAutos, tablaTarifasMotos):
             tarifasEstablecidas += 1
 
         if tarifasEstablecidas == 2:
-            print(f"Tarifas: \n1. Autos: {tablaTarifasAutos[1]}\n2. Motos: {tablaTarifasMotos[1]}")
             tarifasEstablecidas = 0
+            repetir = True
+            
+            while repetir == True:
+                volver = input(f"Tarifas: \n1. Autos: {tablaTarifasAutos[1]}\n2. Motos: {tablaTarifasMotos[1]}\n3. Regresar a menu principal1\n")
+                if volver == 3:
+                    operarTarifa(tablaTarifasAutos, tablaTarifasMotos)
+                    repetir == False
+                else:
+                    print("No es posible ejecutar ese comando")
+                    repetir == True
 
     # Seccion modificar tarifas, nos envia al metodo modificarTarifas
     # El metodo recibe 2 parametros que son las 2 tablas de tarifas (tablaTarifasAutos, tablaTarifasMotos)
@@ -198,14 +232,14 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
     nuevoIngreso = []
     validar = False
     while validar == False:
-        tipoVehiculo = input("Ingrese el tipo de vehículo:\n\na: Automóvil\nm: Motocicleta\n")
-
+        tipoVehiculo = input("Ingrese el tipo de vehículo:\n\na: Automóvil\nm: Motocicleta\nOpcion: ")
+        
         if tipoVehiculo == "a":
-            tipoVehiculo = "Automovil"
-                
+            tipoVehiculo = "Automovil"           
             valido = False
+
             while valido == False:
-                placa = input("Ingrese la placa del auto en formato: AAA111: \n")
+                placa = input("Ingrese la placa del auto en formato: AAA111: ")
 
                 # Se valida que placa tenga 6 caracteres
                 # Se separa entre letras y numeros para tarbajarlas mas facilmente
@@ -223,6 +257,12 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
                             nuevoIngreso.append(placaCompleta)
                             nuevoIngreso.append(tipoVehiculo)
                             valido = True
+
+                            # PENDIENTE
+                            # Se crea bucle que busque en placa y pregunta si el vehiculo existe en la base de datos
+                            # Si existe, valida que hora de salida sea diferente a -1
+                            # Si hora de salida diferente a -1 se puede ingresar el vehiculo
+                            # Si no, imprime mensaje que el vehiculo se encuentra en el parqueadero y no se puede volver a ingresar
                     
                     except:
                         print("El tipo de dato ingresado no es valido")
@@ -238,7 +278,7 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
 
             valido = False
             while valido == False:
-                placa = input("Ingrese la placa del auto en formato: AAA11A: \n")
+                placa = input("Ingrese la placa del auto en formato AAA11A: ")
 
                 # Se valida que placa tenga 6 caracteres
                 # Se separa entre letras y numeros para tarbajarlas mas facilmente
@@ -257,6 +297,12 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
                             nuevoIngreso.append(placaCompleta)
                             nuevoIngreso.append(tipoVehiculo)
                             valido = True
+
+                            # PENDIENTE
+                            # Se crea bucle que busque en placa y pregunta si el vehiculo existe en la base de datos
+                            # Si existe, valida que hora de salida sea diferente a -1
+                            # Si hora de salida diferente a -1 se puede ingresar el vehiculo y termian el bucle
+                            # Si no, imprime mensaje que el vehiculo se encuentra en el parqueadero y no se puede volver a ingresar
                     
                     except:
                         print("El tipo de dato ingresado no es valido")
@@ -275,9 +321,9 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
         # Se añade la hora completa al arreglo "nuevoIngreso"
         validando = False
         while validando == False:
-            horaEntrada = int(input("Ingrese la hora de ingreso en formato de 24 horas: hhmm\n"))
-            horas=horaEntrada//100
-            min=horaEntrada%100
+            horaEntrada = int(input("Ingrese la hora de ingreso en formato de 24 horas HHMM: "))
+            horas = horaEntrada//100
+            min = horaEntrada%100
 
             if horas > 23:
                 print("Las horas no pueden superar las 23 Horas")
@@ -288,31 +334,137 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
                     validando = False
                 else:
                     nuevoIngreso.append(horaEntrada)
+                    nuevoIngreso.append(" ")
                     validando = True
 
     # Se pide nombre del cliente y se añade a "nuevoIngreso" 
-    nombre = input("Ingrese el nombre del cliente:\n").lower
+    nombre = input("Ingrese el nombre del cliente:\n")
     nuevoIngreso.append(nombre) 
+    nuevoIngreso.append(0)
+    nuevoIngreso.append(0)
+    contadorFactura += 1
+    return nuevoIngreso
 
     # for i in range(0, len(nuevoIngreso)):
     #     print(nuevoIngreso[i])
 
-    # registroVehiculos
-    
 
-def buscarVehiculo():
-    print("")
+# Pide al usuario tipo de vehiculo a buscar
+# En cualquier caso pide el numero de placa
+# Recorre la tabla buscando la coincidencia, si la encuentra imprime los datos. Si no, indica vehiculo no encontrado
+def buscarVehiculo(registroVehiculos):
+    validar = False
+    while validar == False:
+        print("Buscar vehiculo: ")
+        print("1. Buscar motos")
+        print("2. Buscar automoviles")
+        print("3. Regresar al menu principal")
+        buscarTipoVehiculo = int(input())
+
+        if buscarTipoVehiculo == 1:
+            numeroPlaca = input("Ingrese la placa de la moto: \n")
+            vehiculoEncontrado = False
+
+            for i in range(1, len(registroVehiculos)):
+                if registroVehiculos[i][2] == "Automovil":
+                        if numeroPlaca == registroVehiculos[i][1]:
+                            print("Factura No: ", registroVehiculos[i][0])
+                            print("Placa: ", registroVehiculos[i][1])
+                            print("Tipo vehiculo: ", registroVehiculos[i][2])
+                            print("Hora de Ingreso: ", registroVehiculos[i][3])
+                            print("Hora de Salida: ", registroVehiculos[i][4])
+                            print("Nombre: ", registroVehiculos[i][5])
+                            print("Numero minutos: ", registroVehiculos[i][6])
+                            print("Total: ", registroVehiculos[i][7])
+                            print("")
+                            vehiculoEncontrado = True
+
+            if vehiculoEncontrado == False:
+                print("Vehículo no encontrado")
+            vehiculoEncontrado = False
+
+        elif buscarTipoVehiculo == 2:
+            numeroPlaca = input("Ingrese la placa del auto: \n")
+            vehiculoEncontrado = False
+
+            for i in range(1, len(registroVehiculos)):
+                if registroVehiculos[i][2] == "Automovil":
+                        if numeroPlaca == registroVehiculos[i][1]:
+                            print("Factura No: ", registroVehiculos[i][0])
+                            print("Placa: ", registroVehiculos[i][1])
+                            print("Tipo vehiculo: ", registroVehiculos[i][2])
+                            print("Hora de Ingreso: ", registroVehiculos[i][3])
+                            print("Hora de Salida: ", registroVehiculos[i][4])
+                            print("Nombre: ", registroVehiculos[i][5])
+                            print("Numero minutos: ", registroVehiculos[i][6])
+                            print("Total: ", registroVehiculos[i][7])
+                            print("")
+                            vehiculoEncontrado = True
+
+            if vehiculoEncontrado == False:
+                print("Vehículo no encontrado")
+            vehiculoEncontrado = False
+                    
+        elif buscarTipoVehiculo == 3:
+            home()
+            validar == True
+        else:
+            print("La opcion no existe, intentelo de nuevo")
 
 
-def mostrarRegistros():
-    print("")
+# Primera version de pruebas 
+def mostrarRegistros(registroVehiculos):
+    validar = False
+    while validar == False:
+        print("1. Mostrar todos los automóviles.")
+        print("2. Mostrar todas las motocicletas.")
+        print("3. Regresar al menú principal.")
+        mostrarRegistros = int(input("Ingrese una opcion: "))
 
+        if mostrarRegistros == 1:
+            print("\nTipo de busqueda: AUTOMOVIL")
+            for fila in range(1, len(registroVehiculos)):
+                if registroVehiculos[fila][2] == "Automovil":
+                    print(registroVehiculos[fila][0],end="    ")
+                    print(registroVehiculos[fila][1],end="    ")
+                    print(registroVehiculos[fila][3],end="    ")
+                    print(registroVehiculos[fila][4],end="    ")
+                    print(registroVehiculos[fila][5],end="    ")
+                    print(registroVehiculos[fila][7],end="    ")
+                    print()
+                    validar = True
+        
+        elif mostrarRegistros == 2:
+            print("\nTipo de busqueda: MOTOCICLETA")
+            for fila in range(1, len(registroVehiculos)):
+                if registroVehiculos[fila][2] == "Motocicleta":
+                    print(registroVehiculos[fila][0],end="    ")
+                    print(registroVehiculos[fila][1],end="    ")
+                    print(registroVehiculos[fila][3],end="    ")
+                    print(registroVehiculos[fila][4],end="    ")
+                    print(registroVehiculos[fila][5],end="    ")
+                    print(registroVehiculos[fila][7],end="    ")
+                    print()
+                    validar = True
+
+        elif mostrarRegistros == 3:
+            validar = True
+        
+        else:
+            print("La opcion ingresada no existe")
+            validar = False
+   
 
 def salidaVehiculo():
     print("")
 
 
 def buscarFactura():
+    # Pide usuario ingresar un numero de placa y lo guarda como placaIngresadaPorUsuario
+    # Hacemos un bucle que vaya recorriendo registroVehiculos[categoriaPlaca][i]
+    # En cada iteracion pregunta(if): registroVehiculos[categoriaPlaca][i] es igual a placaIngresadaPorUsuario
+    # Si lo es, imprime los datos que se encuentren en esa fila
+    # Si no, incrementa indice en 1 y repite el bucle
     print("")
 
 
