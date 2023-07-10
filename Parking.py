@@ -11,9 +11,10 @@ def home():
     tablaTarifasAutos = ["Automovil", -1]
     tablaTarifasMotos = ["Motocicleta", -1]
     contadorFactura = 1
-    #registroVehiculos = [[1, "Placa", "Tipo Vehiculo", "Hora Ingreso", "Hora Salida", "Total Minutos", "Nombre", "Cobro"], 
 
-    registroVehiculos = [[1, "ABC123", "Automóvil", "09:30", "12:45", 195, "Juan Pérez", 150],
+    registroVehiculos = [
+          ["Factura", "Placa", "Tipo Vehiculo", "Hora Ingreso", "Hora Salida", "Total Minutos", "Nombre", "Cobro"],
+          [1, "ABC123", "Automovil", "09:30", "12:45", 195, "Juan Pérez", 150],
           [2, "DEF45F", "Motocicleta", "11:15", "14:20", 185, "María García", 120],
           [3, "GHI789", "Automovil", "13:20", "18:10", 290, "Pedro López", 230],
           [4, "JKL012", "Automovil", "15:45", "19:30", 225, "Ana Martínez", 180],
@@ -68,14 +69,46 @@ def home():
             elif opcion == 4:
                 mostrarRegistros(registroVehiculos)
             elif opcion == 5:
-                salidaVehiculo()
+                salidaVehiculo(registroVehiculos)
             elif opcion == 6:
-                buscarFactura()
+                buscarFactura(registroVehiculos)
             elif opcion == 7:
-                cuadreCaja()
+                cuadreCaja(registroVehiculos)
             elif opcion == 8:
                 # Se cierra el programa
                 exit()
+
+def calcularTiempoTranscurrido(registroVehiculos):
+    for i in range (len(registroVehiculos)):
+        horass = registroVehiculos[i][4]//100
+        mins = registroVehiculos[i][4]%100
+        horas = registroVehiculos[i][3]//100
+        min = registroVehiculos[i][3]%100 
+        
+        if registroVehiculos[i][2] < registroVehiculos [i][3]:
+            minutos=mins+(60-min)
+            if horas + 1 == horass:
+                minutos=minutos
+                minutost=minutos
+            else:
+                horasm=horass-horas-1
+                horasm1=horasm*60
+                minutost=horasm1+minutos
+        
+        registroVehiculos[i][7].append(minutost)
+                
+        return minutost
+
+def cobrototal(registroVehiculos, minutost , tablaTarifasAutos, tablaTarifasMotos):
+    for i in range (len(registroVehiculos)):
+        if registroVehiculos[i][2] == "Automovil":
+            cobroTotal = tablaTarifasAutos[1] * minutost
+            # registroVehiculos[i][7].
+        elif registroVehiculos[i][2] == "Motocicleta":
+            cobroTotal = tablaTarifasMotos[1] * minutost
+        else:
+            print("La opcion no existe")
+        return cobrototal
 
 
 def modificarTarifas(tablaTarifasAutos, tablaTarifasMotos):
@@ -232,9 +265,9 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
     nuevoIngreso = []
     validar = False
     while validar == False:
-        tipoVehiculo = input("Ingrese el tipo de vehículo:\n\na: Automóvil\nm: Motocicleta\nOpcion: ")
+        tipoVehiculo = int(input("Ingrese el tipo de vehículo:\n1. Automóvil\n2. Motocicleta\n3. Volver\nOpcion: "))
         
-        if tipoVehiculo == "a":
+        if tipoVehiculo == 1:
             tipoVehiculo = "Automovil"           
             valido = False
 
@@ -273,7 +306,7 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
 
             validar = True
 
-        elif tipoVehiculo == "m":
+        elif tipoVehiculo == 2:
             tipoVehiculo = "Motocicleta"
 
             valido = False
@@ -293,16 +326,17 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
                         numeroPlaca = int(numeroPlaca)
 
                         if numeroPlaca >= 0 and numeroPlaca < 100:
-                            nuevoIngreso.append(contadorFactura)
-                            nuevoIngreso.append(placaCompleta)
-                            nuevoIngreso.append(tipoVehiculo)
-                            valido = True
 
                             # PENDIENTE
                             # Se crea bucle que busque en placa y pregunta si el vehiculo existe en la base de datos
                             # Si existe, valida que hora de salida sea diferente a -1
                             # Si hora de salida diferente a -1 se puede ingresar el vehiculo y termian el bucle
                             # Si no, imprime mensaje que el vehiculo se encuentra en el parqueadero y no se puede volver a ingresar
+
+                            nuevoIngreso.append(contadorFactura)
+                            nuevoIngreso.append(placaCompleta)
+                            nuevoIngreso.append(tipoVehiculo)
+                            valido = True
                     
                     except:
                         print("El tipo de dato ingresado no es valido")
@@ -312,8 +346,11 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
                     valido = False
 
             validar = True 
+
+        elif tipoVehiculo == 3:
+            home()
         else:
-            print("El tipo de vehiculo no existe")
+            print("La opcion no existe")
             validar = False
         
         # Se pide ingresar la hora de entrada del vehiculo en formato 24 horas
@@ -334,7 +371,7 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
                     validando = False
                 else:
                     nuevoIngreso.append(horaEntrada)
-                    nuevoIngreso.append(" ")
+                    nuevoIngreso.append(-1)
                     validando = True
 
     # Se pide nombre del cliente y se añade a "nuevoIngreso" 
@@ -345,13 +382,7 @@ def ingresarVehiculo(registroVehiculos, contadorFactura):
     contadorFactura += 1
     return nuevoIngreso
 
-    # for i in range(0, len(nuevoIngreso)):
-    #     print(nuevoIngreso[i])
 
-
-# Pide al usuario tipo de vehiculo a buscar
-# En cualquier caso pide el numero de placa
-# Recorre la tabla buscando la coincidencia, si la encuentra imprime los datos. Si no, indica vehiculo no encontrado
 def buscarVehiculo(registroVehiculos):
     validar = False
     while validar == False:
@@ -366,21 +397,21 @@ def buscarVehiculo(registroVehiculos):
             vehiculoEncontrado = False
 
             for i in range(1, len(registroVehiculos)):
-                if registroVehiculos[i][2] == "Automovil":
+                if registroVehiculos[i][2] == "Motocicleta":
                         if numeroPlaca == registroVehiculos[i][1]:
                             print("Factura No: ", registroVehiculos[i][0])
                             print("Placa: ", registroVehiculos[i][1])
                             print("Tipo vehiculo: ", registroVehiculos[i][2])
                             print("Hora de Ingreso: ", registroVehiculos[i][3])
                             print("Hora de Salida: ", registroVehiculos[i][4])
-                            print("Nombre: ", registroVehiculos[i][5])
-                            print("Numero minutos: ", registroVehiculos[i][6])
+                            print("Nombre: ", registroVehiculos[i][6])
+                            print("Numero minutos: ", registroVehiculos[i][5])
                             print("Total: ", registroVehiculos[i][7])
                             print("")
                             vehiculoEncontrado = True
 
             if vehiculoEncontrado == False:
-                print("Vehículo no encontrado")
+                print("Vehículo no encontrado\n")
             vehiculoEncontrado = False
 
         elif buscarTipoVehiculo == 2:
@@ -395,8 +426,8 @@ def buscarVehiculo(registroVehiculos):
                             print("Tipo vehiculo: ", registroVehiculos[i][2])
                             print("Hora de Ingreso: ", registroVehiculos[i][3])
                             print("Hora de Salida: ", registroVehiculos[i][4])
-                            print("Nombre: ", registroVehiculos[i][5])
-                            print("Numero minutos: ", registroVehiculos[i][6])
+                            print("Nombre: ", registroVehiculos[i][6])
+                            print("Numero minutos: ", registroVehiculos[i][5])
                             print("Total: ", registroVehiculos[i][7])
                             print("")
                             vehiculoEncontrado = True
@@ -412,7 +443,7 @@ def buscarVehiculo(registroVehiculos):
             print("La opcion no existe, intentelo de nuevo")
 
 
-# Primera version de pruebas 
+# Completo, pendiente de documentacion
 def mostrarRegistros(registroVehiculos):
     validar = False
     while validar == False:
@@ -425,12 +456,12 @@ def mostrarRegistros(registroVehiculos):
             print("\nTipo de busqueda: AUTOMOVIL")
             for fila in range(1, len(registroVehiculos)):
                 if registroVehiculos[fila][2] == "Automovil":
-                    print(registroVehiculos[fila][0],end="    ")
-                    print(registroVehiculos[fila][1],end="    ")
-                    print(registroVehiculos[fila][3],end="    ")
-                    print(registroVehiculos[fila][4],end="    ")
-                    print(registroVehiculos[fila][5],end="    ")
-                    print(registroVehiculos[fila][7],end="    ")
+                    print(registroVehiculos[fila][0], end="    ")
+                    print(registroVehiculos[fila][1], end="    ")
+                    print(registroVehiculos[fila][3], end="    ")
+                    print(registroVehiculos[fila][4], end="    ")
+                    print(registroVehiculos[fila][5], end="    ")
+                    print(registroVehiculos[fila][7], end="    ")
                     print()
                     validar = True
         
@@ -438,12 +469,12 @@ def mostrarRegistros(registroVehiculos):
             print("\nTipo de busqueda: MOTOCICLETA")
             for fila in range(1, len(registroVehiculos)):
                 if registroVehiculos[fila][2] == "Motocicleta":
-                    print(registroVehiculos[fila][0],end="    ")
-                    print(registroVehiculos[fila][1],end="    ")
-                    print(registroVehiculos[fila][3],end="    ")
-                    print(registroVehiculos[fila][4],end="    ")
-                    print(registroVehiculos[fila][5],end="    ")
-                    print(registroVehiculos[fila][7],end="    ")
+                    print(registroVehiculos[fila][0], end="    ")
+                    print(registroVehiculos[fila][1], end="    ")
+                    print(registroVehiculos[fila][3], end="    ")
+                    print(registroVehiculos[fila][4], end="    ")
+                    print(registroVehiculos[fila][5], end="    ")
+                    print(registroVehiculos[fila][7], end="    ")
                     print()
                     validar = True
 
@@ -455,21 +486,86 @@ def mostrarRegistros(registroVehiculos):
             validar = False
    
 
-def salidaVehiculo():
+def salidaVehiculo(registroVehiculos):
+    # Se crea variable coincidencia
+    # Se pide al usuario que ingrese el tipo de vehiculo
+    # Se pide al usuario que ingrese la placa del vehiculo
+
+    # Se hace bucle que recorra la tabla
+        # Se busca el tipo de vehiculo
+            # Se busca la placa del vehiculo en la tabla donde tipo de vehiculo coincide
+            # Si placa es igual a placaIngresada y hora salida es -1 
+            # Se pide al usuario la hora de salida del vehiculo
+            # Se le asigna la hora de salida 
+            # Incrementa coincidencia en 1
+
+    # Si coincidencia < 1 imprime el vehiculo no se encuentra en el parqueadero
+        
+    # Cuando entro el vehiculo asigno -1 a hora de salida
+    # Cuando sale le asigna la hora a la que salio
+    print("Salida de Vehiculo")
+    tipoVehiculo = input("Ingrese el tipo de Vehiculo: ")
+    placa = input("ingrese la placa del Vehiculo: ")
+
+    for i in range(len(registroVehiculos)):
+        
+        valido = False
+        while valido == False:
+            if registroVehiculos[i][1] == placa:
+                if registroVehiculos[i][3] == -1:
+                    
+                    validar=False
+                    while validar == False:
+                        registroVehiculos[i][4] = int(input("Ingrese la hora de salida: "))
+                        if registroVehiculos[i][3] < registroVehiculos [i][4]:
+                            print("Factura No: ",registroVehiculos[i][0],end=" ")
+                            print("Tipo de vehiculo: ",registroVehiculos[i][2],end=" ")
+                            print("Placa: ",registroVehiculos[i][1],end=" ")
+                            print("Hora de salida: ",registroVehiculos[i][3],end=" ")
+                            print("Numero de minutos: ",registroVehiculos[i][6],end=" ")
+                            print("Total a pagar: ",registroVehiculos[i][0],end=" ")
+                            validar = True
+                        else:
+                            print("la hora de salida no puede ser inferior a la hora de entrada")
+                            validar = False
+            else:
+                print("el vehiculo ingresado no esta registrado")
+                valido=False   
+            valido = True                    
+
+
+def buscarFactura(registroVehiculos):
+    numeroFactura = int(input("Ingrese el numero de factura: "))
     print("")
 
-
-def buscarFactura():
-    # Pide usuario ingresar un numero de placa y lo guarda como placaIngresadaPorUsuario
-    # Hacemos un bucle que vaya recorriendo registroVehiculos[categoriaPlaca][i]
-    # En cada iteracion pregunta(if): registroVehiculos[categoriaPlaca][i] es igual a placaIngresadaPorUsuario
-    # Si lo es, imprime los datos que se encuentren en esa fila
-    # Si no, incrementa indice en 1 y repite el bucle
-    print("")
+    for i in range(1, len(registroVehiculos)):
+        if registroVehiculos[i][0] == numeroFactura:
+            for mostrarRegistro in range(0, 8):
+                print(registroVehiculos[0][mostrarRegistro], end = ": ")
+                print(registroVehiculos[i][mostrarRegistro])
 
 
-def cuadreCaja():
-    print("")
+def cuadreCaja(registroVehiculos):
+    totalVehiculos = 0; totalAutos = 0; totalMotos = 0
 
+    for i in range(1, len(registroVehiculos)):
+        if registroVehiculos[i][4] != -1:
+            totalVehiculos += 1
+            # ingresosTotales += registroVehiculos[i][7]
+    print("Total de vehiculos: ", totalVehiculos)
+
+    for i in range(1, len(registroVehiculos)):
+        if registroVehiculos[i][2] == "Automovil":
+            if registroVehiculos[i][4] != -1:
+                totalAutos += 1
+                # ingresosTotales += registroVehiculos[i][7]
+    print("Total de automoviles: ", totalAutos)
+        
+    for i in range(1, len(registroVehiculos)):
+        if registroVehiculos[i][2] == "Motocicleta":
+            if registroVehiculos[i][4] != -1:
+                totalMotos += 1
+                # ingresosTotales += registroVehiculos[i][7]
+    print("Total de motos: ", totalMotos)
 
 home()
